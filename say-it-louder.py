@@ -1,10 +1,12 @@
 from flask import Flask,make_response,render_template,redirect
 
 from mysql import MySQLDatabase
+from imdb_module import IMDataBase
 
 import json
 
 db = MySQLDatabase('imdb','imdb','imdb','localhost')
+# imDB = IMDataBase()
 
 DEBUG = 1
 
@@ -58,7 +60,7 @@ def imdb_search(title):
 
 
 #@app.route('/api/search?q=<title>&kind=movie')
-@app.route('/api/search/<query>/movie')
+@app.route('/api/v0/search/<query>/movie')
 def imdb_api_search(query):
 
     result = {}

@@ -1,14 +1,19 @@
 import MySQLdb as _mysql
 
 # http://imdbpy.sourceforge.net/support.html#documentation
-import imdb
+#import imdb
+
+#import imdb_module
+from imdb_module import IMDataBase
 
 # For the search&replace of bad characters
 import re
 
 DEBUG = 0
 
-ia = imdb.IMDb()
+imDB = IMDataBase()
+
+#ia = imdb.IMDb()
 
 class MySQLDatabase:
     def __init__ (self, database_name, username, password, host='localhost') :
@@ -54,21 +59,20 @@ class MySQLDatabase:
             return False
 
 
-
-    # Free test search in IMDB when the search is not present in the DB
-    def get_movies_by_name(self,search):
-        ia = imdb.IMDb()
-        s_result = ia.search_movie( search )
-        if s_result:
-            if DEBUG == 1:
-                print "s_result:",s_result
-                for item in range(0,len(s_result)):
-                    print "item:",s_result[item].data
-            return s_result
-        else:
-            if DEBUG == 1:
-                print "No movies found!"
-            return {}
+    # # Free test search in IMDB when the search is not present in the DB
+    # def get_movies_by_name(self,search):
+    #     ia = imdb.IMDb()
+    #     s_result = ia.search_movie( search )
+    #     if s_result:
+    #         if DEBUG == 1:
+    #             print "s_result:",s_result
+    #             for item in range(0,len(s_result)):
+    #                 print "item:",s_result[item].data
+    #         return s_result
+    #     else:
+    #         if DEBUG == 1:
+    #             print "No movies found!"
+    #         return {}
 
 
     # Get from DB all the movies under the same search_id
@@ -81,6 +85,7 @@ class MySQLDatabase:
         cursor = self.db.cursor()
         cursor.execute(sql)
         movies = cursor.fetchall()
+        cursor.close()
         if len(movies):
             if DEBUG == 1:
                 print "Return from DB"
@@ -116,6 +121,8 @@ class MySQLDatabase:
         cursor = self.db.cursor()
         cursor.execute(sql)
 
+        cursor.close()
+
         self.db.commit()
         return
 
@@ -145,6 +152,8 @@ class MySQLDatabase:
             print sql
         cursor = self.db.cursor()
         cursor.execute(sql)
+
+        cursor.close()
 
         # Let's do commit as a last step instead
         #self.db.commit()
@@ -225,6 +234,8 @@ class MySQLDatabase:
             cursor = self.db.cursor()
             cursor.execute(sql)
 
+            cursor.close()
+
         self.db.commit()
 
         return True
@@ -278,9 +289,11 @@ class MySQLDatabase:
                 for movie in sorted(movies):
                     print movie
 
+            cursor.close()
             return movies
 
         # Nothing to add from DB. Return what we already have.
+        cursor.close()
         return movies
 
 
@@ -329,7 +342,8 @@ class MySQLDatabase:
                 print "Search '"+search+"' not found. Connecting to IMDB..."
 
             # Send search to IMDB
-            s_result = self.get_movies_by_name(search)
+            # s_result = self.get_movies_by_name(search)
+            s_result = imDB.get_movies_by_name(search)
 
             # No results -> break
             if len(s_result) == 0:

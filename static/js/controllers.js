@@ -10,7 +10,7 @@ IMDBAPIControllers.controller('ArtistListCtrl', ['$scope', '$routeParams', '$htt
     // Make sure we have something in the URL to work with
     if ($routeParams.Search){
       // Search Artist using the string in the URL
-      $http.get('http://127.0.0.1:5000/api/search/'+ $routeParams.Search +'/movie').success(function(data) {
+      $http.get('http://127.0.0.1:5000/api/v0/search/'+ $routeParams.Search +'/movie').success(function(data) {
         $scope.artists = data;
       });
     }
@@ -23,7 +23,7 @@ IMDBAPIControllers.controller('ArtistListCtrl', ['$scope', '$routeParams', '$htt
       if (Search != undefined && Search != ''){
 
         // Search Artist with whatever we have in the search box
-        $http.get('http://127.0.0.1:5000/api/search/'+ Search +'/movie').success(function(data) {
+        $http.get('http://127.0.0.1:5000/api/v0/search/'+ Search +'/movie').success(function(data) {
           $scope.artists = data;
           //console.log(data)
         });
@@ -36,7 +36,7 @@ IMDBAPIControllers.controller('ArtistListCtrl', ['$scope', '$routeParams', '$htt
       if (Search != undefined && Search != ''){
 
         // Search Artist with whatever we have in the search box
-        $http.get('http://127.0.0.1:5000/api/search/'+ Search +'/movie').success(function(data) {
+        $http.get('http://127.0.0.1:5000/api/v0/search/'+ Search +'/movie').success(function(data) {
           $scope.artists = data;
           //console.log(data)
           // After Enter Key detected send user to Albums choosing the first artist of the list
