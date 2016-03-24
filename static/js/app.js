@@ -7,27 +7,35 @@ var IMDBAPIApp = angular.module('IMDBAPIApp', [
 IMDBAPIApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
-      when('/movie/', {
+    when('/movie/', {
         templateUrl: '/static/html/search.html',
         controller: 'ArtistListCtrl'
       }).
-      when('/movie/:Search', {
+    when('/movie/:Search', {
         templateUrl: '/static/html/search.html',
         controller: 'ArtistListCtrl'
       }).
-      when('/albums/:ArtistId/:ArtistName', {
+    when('/albums/:ArtistId/:ArtistName', {
         templateUrl: '/static/html/albums.html',
         controller: 'AlbumsCtrl'
       }).
-      when('/tracks/:AlbumId/:AlbumName/:ArtistName', {
+    when('/tracks/:AlbumId/:AlbumName/:ArtistName', {
         templateUrl: '/static/html/tracks.html',
         controller: 'TracksCtrl'
       }).
-      when('/play/:TrackId/:TrackName/:AlbumName/:ArtistName', {
+    when('/play/:TrackId/:TrackName/:AlbumName/:ArtistName', {
         templateUrl: '/static/html/play.html',
         controller: 'PlayCtrl'
       }).
-      otherwise({
-        redirectTo: '/movie'
+
+
+    //when('/your_open_game ', {
+    //    templateUrl: '/static/html/play.html',
+    //    controller: 'PlayCtrl'
+    //  }).
+
+
+    otherwise({
+        redirectTo: '/'
       });
   }]);

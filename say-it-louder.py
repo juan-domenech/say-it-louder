@@ -17,33 +17,94 @@ app._static_folder = '/Users/juan/say-it-louder/static/'
 # set the secret key.  keep this really secret:
 app.secret_key = 'This_is_a_secret'
 
-@app.route("/")
-def index():
-
-    return redirect("/static/html/index.html", code=302)
-
-# @app.route("/index.html")
-# def index_html():
-#     return redirect("/static/html/index.html", code=302)
-
-#@app.route("/partials/search.html")
-#def search_html():
-#    return redirect("/static/html/search.html", code=302)
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_html():
     if request.method == 'POST':
         session['user_name'] = request.form['user_name']
-        return redirect('/game', code=302)
-    return render_template("login.html")
+        return redirect('/', code=302)
+    return render_template('login.html')
 
 
 @app.route('/logout')
 def logout():
     # remove the username from the session if it's there
     session.pop('user_name', None)
-    return redirect("/login", code=302)
+    return redirect('/', code=302)
+
+
+@app.route('/')
+def index():
+
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    user_name = session['user_name']
+
+    # Check DB for current games
+    game_id = db.check_open_game()
+    if DEBUG:
+        print 'Return of check_open_game()',game_id
+
+    if game_id:
+        # There is a game open. Joining!
+        db.join_game(user_name,game_id)
+        if DEBUG:
+            print 'Joining game_id',game_id
+        you_open_game = False
+
+    else:
+        # No game open. Let's open it!
+        game_id = db.create_game(user_name)
+        if DEBUG:
+            print 'Created game_id',game_id
+
+        you_open_game = True
+
+
+
+
+    return render_template('index.html', user_name = user_name, you_open_game = you_open_game)
+
+
+
+@app.route('/you-open-game')
+def you_open_game():
+
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    user_name = session['user_name']
+
+    open_game = db.check_open_game(user_name )
+    if open_game:
+        pass
+    else:
+        pass
+
+    return render_template('index.html', user_name = user_name)
+
+
+
+
+
+
+@app.route('/search_movie')
+def search_movie():
+
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    #user_name = session['user_name']
+
+
+    return render_template('search_movie.html')
+
+
+
 
 
 @app.route('/game')

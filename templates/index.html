@@ -18,13 +18,32 @@
 	<![endif]-->
 </head>
 <body ng-controller="ArtistListCtrl">
-​
+
+    {% if user_name %}
+        <h1>Hello {{ user_name }} !</h1>
+    {% endif %}
+
+    {% if you_open_game %}
+        <h2> You open game. Click to continue.</h2>
+        <a href="/you_open_game">Click</a>
+    {% else %}
+        <h2> A game player is waiting for you! Click to continue.</h2>
+        <a href="/join_game">Click</a>
+    {% endif %}
+
+
 	<!-- Main AngularJS directive -->
-	<div ng-view></div>
+    <!--
+        <div ng-view>
+        </div>
+    -->
+
 ​
 	<!-- extra files -->
 	<script src="/static/lib/js/jquery-2.2.0.min.js"></script>
 	<script src="/static/lib/js/bootstrap.min.js"></script>
 ​
+
+
 </body>
 </html>

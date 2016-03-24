@@ -9,7 +9,7 @@ from imdb_module import IMDataBase
 # For the search&replace of bad characters
 import re
 
-DEBUG = 0
+DEBUG = 1
 
 imDB = IMDataBase()
 
@@ -297,7 +297,6 @@ class MySQLDatabase:
         return movies
 
 
-
     #
     # Main "search by string" function
     #
@@ -374,4 +373,67 @@ class MySQLDatabase:
                 return movies
             else:
                 return []
+
+
+    def get_game_id_by_player_a(self,user_name):
+        sql = "SELECT game_id FROM games WHERE player_a ='"+user_name+"';"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        game_id = cursor.fetchone()
+        if game_id:
+            if DEBUG:
+                print "Found game_id:",game_id
+            cursor.close()
+            return game_id[0]
+        else:
+            if DEBUG:
+                print "ERROR: Game_ID not found in DB"
+            cursor.close()
+            return False
+
+
+    def create_game(self,user_name):
+        sql = "INSERT INTO games (player_a) VALUES ('"+str(user_name)+"');"
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        cursor.close()
+        self.db.commit()
+        # Recover game_id that the autoincrement has created for us from the last Insert
+        return self.get_game_id_by_player_a(user_name)
+
+
+    def check_open_game(self):
+        # Check for games where where is no Player B
+        sql = "SELECT game_id FROM games WHERE player_b IS NULL;"
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        # Let's get only one (in case more than one game is empty)
+        game_id = cursor.fetchone()
+        cursor.close()
+
+        if game_id:
+            # There is a game waiting.
+            return game_id
+        else:
+            # No game waiting.
+            #game_id = self.create_game(user_name)
+            return False
+
+
+    def join_game(self,user_name,game_id):
+        sql = "UPDATE `games` SET `player_b`='"+str(user_name)+"' WHERE `game_id`='"+str(game_id)+"';"
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        cursor.close()
+        self.db.commit()
+        return
+
 
