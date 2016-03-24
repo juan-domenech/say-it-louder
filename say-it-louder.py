@@ -1,4 +1,4 @@
-from flask import Flask,make_response,render_template,redirect
+from flask import Flask,make_response,render_template,redirect,session,escape,request,url_for
 
 from mysql import MySQLDatabase
 from imdb_module import IMDataBase
@@ -10,20 +10,54 @@ db = MySQLDatabase('imdb','imdb','imdb','localhost')
 
 DEBUG = 1
 
+# http://flask.pocoo.org/docs/0.10/quickstart/
 app = Flask(__name__)
 app._static_folder = '/Users/juan/say-it-louder/static/'
 
+# set the secret key.  keep this really secret:
+app.secret_key = 'This_is_a_secret'
+
 @app.route("/")
-def index_empty():
+def index():
+
     return redirect("/static/html/index.html", code=302)
 
-@app.route("/index.html")
-def index_html():
-    return redirect("/static/html/index.html", code=302)
+# @app.route("/index.html")
+# def index_html():
+#     return redirect("/static/html/index.html", code=302)
 
 #@app.route("/partials/search.html")
 #def search_html():
 #    return redirect("/static/html/search.html", code=302)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login_html():
+    if request.method == 'POST':
+        session['user_name'] = request.form['user_name']
+        return redirect('/game', code=302)
+    return render_template("login.html")
+
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('user_name', None)
+    return redirect("/login", code=302)
+
+
+@app.route('/game')
+def game_html():
+    if not 'user_name' in session:
+        # print "not logged in",session
+        #session['stored']= "test"+session['user_name']+"test"
+        print "not logged in",session
+        return redirect("/login")
+        # return 'You are not logged in'
+
+    session['stored']= "test"+session['user_name']+"test"
+    print "logged in", session
+    return 'Logged in as %s' % escape(session['user_name'])
 
 
 
@@ -88,14 +122,13 @@ def imdb_api_search(query):
     response.headers['Content-Type'] = 'application/json; charset=utf-8'
     response.headers['Access-Control-Allow-Origin'] = '*'
 
-
     return response
 
 
 
 
 if __name__ == '__main__':
-    app.run(debug=False,
+    app.run(debug=True,
             host="0.0.0.0",
             port=5000,
             threaded=True,
