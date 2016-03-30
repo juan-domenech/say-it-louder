@@ -113,27 +113,29 @@ def login():
             if DEBUG:
                 print "GET /login with user_name %s" % user_name
 
-            if 'player' in session:
-                # Player A detected
-                if session['player'] == 'A':
-                    if DEBUG:
-                        print 'GET /login Player A detected. Redirecting to /challenge/'
-                    return redirect('/#/challege/', code=302)
-                # Player B detected
-                elif session['player'] == 'B':
-                    if DEBUG:
-                        print 'GET /loging Player B detected. Redirecting to /resolve/'
-                    return redirect('/#/resolve/', code=302)
+            # if 'player' in session:
+            #     # Player A detected
+            #     if session['player'] == 'A':
+            #         if DEBUG:
+            #             print 'GET /login Player A detected. Redirecting to /challenge/'
+            #         return redirect('/#/challege/', code=302)
+            #     # Player B detected
+            #     elif session['player'] == 'B':
+            #         if DEBUG:
+            #             print 'GET /loging Player B detected. Redirecting to /resolve/'
+            #         return redirect('/#/resolve/', code=302)
+            #
+            # # user_name present but not player present
+            # else:
+            #     print "ERROR: User present in the system but not carrying session[player]"
+            #     session.pop('user_name', None)
+            #     return redirect('/#/login', code=302)
 
-            # user_name present but not player present
-            else:
-                print "ERROR: User present in the system but not carrying session[player]"
-                session.pop('user_name', None)
-                return redirect('/#/login', code=302)
-
+            return redirect('/#/status', code=302)
 
         # No session detected and no POST? Render login.html again
         else:
+            #session.pop('user_name', None)
             return render_template('login.html')
 
 
@@ -157,29 +159,32 @@ def status_html():
 
     response =  '<h2>Status Page</h2>'
     response += '<h3>Hello '+user_name+'!</h3>'
+    response += '<h4>You are Player_'+session['player']+' in Game_ID:'+str(session['game_id'])+'</h4>'
     response += 'This is the current status:'
 
     game = ''
 
-    games_raw = db.get_games()
+    games_total = db.get_games()
 
-    for item in games_raw:
-        game += '<h5>GameID:'+str(item[0])+' Time_Stamp:'+item[1]+' Player_A:'+item[2]
-        if item[3:4]:
-            game += ' Player_B:'+item[3]
-        if item[4:5]:
-            game += ' MovieID:'+str(item[4])
-        if item[5:6]:
-            game += ' Keywords_A:'+str(item[5])
-        if item[6:7]:
-            game += ' Keywords_B:'+str(item[6])
-        if item[7:8]:
-            game += ' Solved:'+str(item[7])
+    for item in games_total:
+        game += '<h5>GameID:'+str(item['game_id'])+' Time_Stamp:'+item['time_stamp']+' Player_A:'+item['player_a']
+        if item.has_key('player_b'):
+            game += ' Player_B:'+str(item['player_b'])
+        if item.has_key('movieID'):
+            game += ' MovieID:'+str(item['movieID'])
+        if item.has_key('keywords_a'):
+            game += ' Keywords_A:'+str(item['keywords_a'])
+        if item.has_key('keywords_b'):
+            game += ' Keywords_B:'+str(item['keywords_b'])
+        if item.has_key('solved '):
+            game += ' Solved:'+str(item['solved'])
 
         game += '</h5>'
 
     response += game
 
+    if DEBUG:
+        print response
     #return render_template('status.html', user_name = user_name, games = games )
     return response
 

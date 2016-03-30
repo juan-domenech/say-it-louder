@@ -40,6 +40,7 @@ class MySQLDatabase:
 
     # Check whether this search string is stored in DB
     def check_search(self,search):
+        self.db.commit()
         # Compare the search string with all the previous stored searches and return the search_id
         sql = "SELECT search_id FROM searches WHERE search='"+search+"';"
         if DEBUG == 1:
@@ -77,6 +78,7 @@ class MySQLDatabase:
 
     # Get from DB all the movies under the same search_id
     def get_movies_by_stored_search(self, search_id, kind):
+        self.db.commit()
         movies_clean = []
         #sql = "SELECT * FROM movies WHERE search_id='"+str(search_id)+"';"
         sql = "SELECT * FROM movies INNER JOIN movies_searches on movies.movieID = movies_searches.movieID and movies_searches.search_id = '"+str(search_id)+"' and movies.kind ='"+str(kind)+"';"
@@ -244,6 +246,7 @@ class MySQLDatabase:
     # Search for similar movies in DB using LIKE and add to the final list
     def get_movies_by_like(self, search, movies ):
 
+        self.db.commit()
         if not movies:
             movies = []
 
@@ -376,6 +379,7 @@ class MySQLDatabase:
 
 
     def get_game_id_by_player_a(self,user_name):
+        self.db.commit()
         sql = "SELECT game_id FROM games WHERE player_a ='"+user_name+"';"
         if DEBUG:
             print sql
@@ -412,6 +416,7 @@ class MySQLDatabase:
 
     def check_open_game(self):
         # Check for games where where is no Player B
+        self.db.commit()
         sql = "SELECT game_id FROM games WHERE player_b IS NULL;"
         if DEBUG == 1:
             print sql
@@ -451,6 +456,7 @@ class MySQLDatabase:
 
 
     def check_for_duplicate_user(self,user_name):
+        self.db.commit()
         if DEBUG:
             print 'Checking wether player %s is already in the system...' % user_name
         sql = "SELECT game_id FROM games WHERE player_a ='"+user_name+"';"
@@ -511,6 +517,7 @@ class MySQLDatabase:
 
 
     def get_movieID_by_game_id(self, game_id):
+        self.db.commit()
         sql = "SELECT movieID FROM games WHERE game_id = "+str(game_id)+";"
         if DEBUG:
             print sql
@@ -537,6 +544,7 @@ class MySQLDatabase:
         # Not necessary at the moment. We should have this information into MySQL
         #title, year = imDB.get_movie_title_by_movieID(movieID)
 
+        self.db.commit()
         sql = "SELECT title, year FROM movies WHERE movieID = "+str(movieID)+";"
         if DEBUG:
             print sql
@@ -554,11 +562,11 @@ class MySQLDatabase:
         return title,year
 
 
+
     # Get full list of games to provide Status
     def get_games(self):
 
         self.db.commit()
-
         sql = "SELECT * FROM games;"
         if DEBUG:
             print sql
@@ -574,31 +582,67 @@ class MySQLDatabase:
 
         if result_temp:
             for item in result_temp:
-                game = []
-                # game_id
+                game = {}
                 if item[0]:
-                    game.append(int(item[0]))
-                # time_stamp
+                    game['game_id'] = int(item[0])
+                else:
+                    game['game_id'] = None
                 if item[1]:
-                    game.append(str(item[1]))
-                # player_a
+                    game['time_stamp'] = str(item[1])
+                else:
+                    game['time_stamp'] = None
                 if item[2]:
-                    game.append(str(item[2]))
-                # player_b
+                    game['player_a'] = str(item[2])
+                else:
+                    game['player_a'] = None
                 if item[3]:
-                    game.append(str(item[3]))
-                # movieID
+                    game['player_b'] = str(item[3])
+                else:
+                    game['player_b'] = None
                 if item[4]:
-                    game.append(int(item[4]))
-                # keywords_a
+                    game['movieID'] = int(item[4])
+                else:
+                    game['movieID'] = None
                 if item[5]:
-                    game.append(str(item[5]))
-                # keywords_b
+                    game['keywords_a'] = str(item[5])
+                else:
+                    game['keywords_a'] = None
                 if item[6]:
-                    game.append(str(item[6]))
-                # solved
+                    game['keywords_b'] = str(item[6])
+                else:
+                    game['keywords_b'] = None
                 if item[7]:
-                    game.append(str(item[7]))
+                    game['solved'] = int(item[7])
+                else:
+                    game['solved'] = None
+
+            # for item in result_temp:
+            #     game = []
+            #     # game_id
+            #     #if item[0]:
+            #     game.append(int(item[0]))
+            #     # time_stamp
+            #     #if item[1]:
+            #     game.append(str(item[1]))
+            #     # player_a
+            #     #if item[2]:
+            #     game.append(str(item[2]))
+            #     # player_b
+            #     #if item[3]:
+            #     game.append(str(item[3]))
+            #     # movieID
+            #     #if item[4]:
+            #     game.append(int(item[4]))
+            #     # keywords_a
+            #     #if item[5]:
+            #     game.append(str(item[5]))
+            #     # keywords_b
+            #     #if item[6]:
+            #     game.append(str(item[6]))
+            #     # solved
+            #     #if item[7]:
+            #     game.append(str(item[7]))
+            #
 
                 result.append(game)
 
