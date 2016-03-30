@@ -10,6 +10,17 @@ IMDBAPIControllers.controller('Login', ['$scope', '$routeParams', '$http',
   }]
 );
 
+// Status
+IMDBAPIControllers.controller('Status', ['$scope', '$routeParams', '$http',
+  function($scope, $routeParams, $http) {
+
+      console.log("Status Called")
+
+  }]
+);
+
+
+
 
 
 // Artists Search (Main page)

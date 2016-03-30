@@ -146,6 +146,46 @@ def logout():
 
 
 
+
+@app.route('/status.html')
+def status_html():
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    user_name = session['user_name']
+
+    response =  '<h2>Status Page</h2>'
+    response += '<h3>Hello '+user_name+'!</h3>'
+    response += 'This is the current status:'
+
+    game = ''
+
+    games_raw = db.get_games()
+
+    for item in games_raw:
+        game += '<h5>GameID:'+str(item[0])+' Time_Stamp:'+item[1]+' Player_A:'+item[2]
+        if item[3:4]:
+            game += ' Player_B:'+item[3]
+        if item[4:5]:
+            game += ' MovieID:'+str(item[4])
+        if item[5:6]:
+            game += ' Keywords_A:'+str(item[5])
+        if item[6:7]:
+            game += ' Keywords_B:'+str(item[6])
+        if item[7:8]:
+            game += ' Solved:'+str(item[7])
+
+        game += '</h5>'
+
+    response += game
+
+    #return render_template('status.html', user_name = user_name, games = games )
+    return response
+
+
+
+
 @app.route('/challenge/')
 def challenge():
     if not 'user_name' in session:
@@ -156,6 +196,37 @@ def challenge():
 
     return render_template('challenge.html', user_name = user_name )
 
+
+@app.route('/challenge/search_movie')
+def search_movie_challenge():
+
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    #user_name = session['user_name']
+
+    return render_template('search_movie_challenge.html')
+
+
+@app.route('/challenge/movie_selected/')
+def movie_selected_challenge():
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    #user_name = session['user_name']
+    #game_id = session['game_id']
+    #movieID = int(movieID)
+    #if DEBUG:
+    #    print "Updating game_id %i with movieID %i" % (game_id, movieID)
+    #db.update_movieID(movieID,game_id)
+
+    #movieID = db.get_movieID_by_game_id(session['game_id'])
+    #if movieID:
+    #    title, year = db.get_movie_title_by_movieID(movieID)
+
+    return render_template('movie_selected_challenge.html')
 
 
 # Recover Keywords from the Challenge
@@ -200,9 +271,9 @@ def challenge_keywords():
         if DEBUG:
             print "Keywords",result
 
-        db.update_keywords(result,session['game_id'])
+        db.update_keywords_a(result,session['game_id'])
 
-        return 'Keywords updated'
+        return redirect("/#/status")
 
     # Method GET
     else:
@@ -211,50 +282,6 @@ def challenge_keywords():
 
 
 
-
-
-
-
-@app.route('/welcome')
-def welcome():
-    if not 'user_name' in session:
-        if DEBUG:
-            print "Not logged in. Redirecting to /login"
-        return redirect("/login")
-    user_name = session['user_name']
-
-    return render_template('welcome.html', user_name = user_name )
-
-
-
-@app.route('/welcome/movie/')
-def welcome_movie():
-    if not 'user_name' in session:
-        if DEBUG:
-            print "Not logged in. Redirecting to /login"
-        return redirect("/login")
-    user_name = session['user_name']
-
-    return render_template('search_movie.html', user_name = user_name )
-
-
-
-@app.route('/you-open-game')
-def you_open_game():
-
-    if not 'user_name' in session:
-        if DEBUG:
-            print "Not logged in. Redirecting to /login"
-        return redirect("/login")
-    user_name = session['user_name']
-
-    open_game = db.check_open_game(user_name )
-    if open_game:
-        pass
-    else:
-        pass
-
-    return render_template('index.html', user_name = user_name)
 
 
 
@@ -271,58 +298,6 @@ def search_movie():
     #user_name = session['user_name']
 
     return render_template('search_movie.html')
-
-
-@app.route('/challenge/search_movie')
-def search_movie_challenge():
-
-    if not 'user_name' in session:
-        if DEBUG:
-            print "Not logged in. Redirecting to /login"
-        return redirect("/login")
-    #user_name = session['user_name']
-
-    return render_template('search_movie_challenge.html')
-
-
-@app.route('/challenge/movie_selected/')
-def movie_selected_challenge():
-    if not 'user_name' in session:
-        if DEBUG:
-            print "Not logged in. Redirecting to /login"
-        return redirect("/login")
-    #user_name = session['user_name']
-    #game_id = session['game_id']
-    #movieID = int(movieID)
-    #if DEBUG:
-    #    print "Updating game_id %i with movieID %i" % (game_id, movieID)
-    #db.update_movieID(movieID,game_id)
-
-    #movieID = db.get_movieID_by_game_id(session['game_id'])
-    #if movieID:
-    #    title, year = db.get_movie_title_by_movieID(movieID)
-
-    return render_template('movie_selected_challenge.html')
-
-
-
-
-
-
-
-
-@app.route('/game')
-def game_html():
-    if not 'user_name' in session:
-        # print "not logged in",session
-        #session['stored']= "test"+session['user_name']+"test"
-        print "not logged in",session
-        return redirect("/login")
-        # return 'You are not logged in'
-
-    session['stored']= "test"+session['user_name']+"test"
-    print "logged in", session
-    return 'Logged in as %s' % escape(session['user_name'])
 
 
 
@@ -358,7 +333,9 @@ def imdb_search(title):
     return result
 
 
-#@app.route('/api/search?q=<title>&kind=movie')
+
+
+# Search movies by free text
 @app.route('/api/v0/search/<query>/movie')
 def imdb_api_search(query):
 
@@ -390,7 +367,7 @@ def imdb_api_search(query):
     return response
 
 
-# API call to update the movieID extracting it from the URL and the game_id from he session
+# API call (Secure) to update the movieID is games extracting it from the URL and the game_id from he session
 @app.route('/api/v0/secure/update/movieID/<movieID>')
 def imdb_api_update_movieID(movieID):
     if not 'user_name' in session:
@@ -412,6 +389,7 @@ def imdb_api_update_movieID(movieID):
     return response
 
 
+# Get movie title and year by movieID
 @app.route('/api/v0/get/title/<movieID>')
 def imdb_api_get_title(movieID):
 
@@ -434,6 +412,44 @@ def imdb_api_get_title(movieID):
 
 
 
+
+
+
+@app.route('/welcome')
+def welcome():
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    user_name = session['user_name']
+
+    return render_template('welcome.html', user_name = user_name )
+
+
+
+@app.route('/welcome/movie/')
+def welcome_movie():
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    user_name = session['user_name']
+
+    return render_template('search_movie.html', user_name = user_name )
+
+
+@app.route('/game')
+def game_html():
+    if not 'user_name' in session:
+        # print "not logged in",session
+        #session['stored']= "test"+session['user_name']+"test"
+        print "not logged in",session
+        return redirect("/login")
+        # return 'You are not logged in'
+
+    session['stored']= "test"+session['user_name']+"test"
+    print "logged in", session
+    return 'Logged in as %s' % escape(session['user_name'])
 
 
 

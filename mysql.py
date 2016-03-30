@@ -499,8 +499,8 @@ class MySQLDatabase:
 
 
     # Update Keywords
-    def update_keywords(self,keywords, game_id):
-        sql = 'UPDATE `games` SET `keywords`="'+str(keywords)+'" WHERE `game_id`= '+str(game_id)+';'
+    def update_keywords_a(self,keywords, game_id):
+        sql = 'UPDATE `games` SET `keywords_a`="'+str(keywords)+'" WHERE `game_id`= '+str(game_id)+';'
         if DEBUG == 1:
             print sql
         cursor = self.db.cursor()
@@ -552,5 +552,59 @@ class MySQLDatabase:
             print "From movieID: %i we got title: %s (%i)" % (movieID,title,year)
 
         return title,year
+
+
+    # Get full list of games to provide Status
+    def get_games(self):
+
+        self.db.commit()
+
+        sql = "SELECT * FROM games;"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result_temp = cursor.fetchall()
+        cursor.close()
+
+        if DEBUG:
+            print result_temp
+
+        result = []
+
+        if result_temp:
+            for item in result_temp:
+                game = []
+                # game_id
+                if item[0]:
+                    game.append(int(item[0]))
+                # time_stamp
+                if item[1]:
+                    game.append(str(item[1]))
+                # player_a
+                if item[2]:
+                    game.append(str(item[2]))
+                # player_b
+                if item[3]:
+                    game.append(str(item[3]))
+                # movieID
+                if item[4]:
+                    game.append(int(item[4]))
+                # keywords_a
+                if item[5]:
+                    game.append(str(item[5]))
+                # keywords_b
+                if item[6]:
+                    game.append(str(item[6]))
+                # solved
+                if item[7]:
+                    game.append(str(item[7]))
+
+                result.append(game)
+
+        if DEBUG:
+            print "Games:",result
+
+        return result
 
 

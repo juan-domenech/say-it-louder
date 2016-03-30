@@ -13,43 +13,45 @@ ChallengeControllers.controller('ChallengeCtrl', ['$scope', '$routeParams', '$ht
 // Challenge Movie Search
 ChallengeControllers.controller('MovieSearchCtrl', ['$scope', '$routeParams', '$http', '$location',
 
-  // Function executed when we get an artist name at the URL Parameters
+  // Function executed when we get a movie name at the URL Parameters
   function ($scope, $routeParams, $http, $location) {
 
     // Make sure we have something in the URL to work with
     if ($routeParams.Search){
       // Search Artist using the string in the URL
       $http.get('http://127.0.0.1:5000/api/v0/search/'+ $routeParams.Search +'/movie').success(function(data) {
-        $scope.artists = data;
+        $scope.movies = data;
       });
     }
 
     //
-    // Function executed everytime Input has changed
+    // Function executed every time Input has changed
     $scope.typeSearch = function(Search) {
 
       // Make sure the user has entered something in Input (it might be a backspace)
       if (Search != undefined && Search != ''){
 
-        // Search Artist with whatever we have in the search box
+        // Search Movie with whatever we have in the search box
         $http.get('http://127.0.0.1:5000/api/v0/search/'+ Search +'/movie').success(function(data) {
-          $scope.artists = data;
+          $scope.movies = data;
           //console.log(data)
         });
       }
     };
 
+    // Function executed when Enter
     $scope.typeEnter = function(Search) {
 
       // Make sure the user has entered something in Input (it might be a backspace)
       if (Search != undefined && Search != ''){
 
-        // Search Artist with whatever we have in the search box
+        // Search Movie with whatever we have in the search box
         $http.get('http://127.0.0.1:5000/api/v0/search/'+ Search +'/movie').success(function(data) {
-          $scope.artists = data;
+          $scope.movies = data;
           //console.log(data)
           // After Enter Key detected send user to Albums choosing the first artist of the list
-          $location.path("albums/"+data[0].movieID+"/"+data[0].title)
+          $location.path("challenge/movie_selected/"+data[0].movieID);
+
         });
 
       }
@@ -60,18 +62,13 @@ ChallengeControllers.controller('MovieSearchCtrl', ['$scope', '$routeParams', '$
 
 
 
-// Show Albums
+//
 ChallengeControllers.controller('MovieSelectedCtrl', ['$scope', '$routeParams', '$http',
   function($scope, $routeParams, $http) {
 
     $http.get('http://127.0.0.1:5000/api/v0/secure/update/movieID/'+ $routeParams.movieID).success(function(data) {
-    //$scope.albums = data.items;
 
         $http.get('http://127.0.0.1:5000/api/v0/get/title/'+ $routeParams.movieID).success(function(data2) {
-        //$scope.params = data;
-
-        //console.log(data.title);
-        //console.log(data.year);
 
         $scope.title = data2.title;
         $scope.year = data2.year;
@@ -79,22 +76,6 @@ ChallengeControllers.controller('MovieSelectedCtrl', ['$scope', '$routeParams', 
         });
 
     });
-
-
-
-      //$scope.title = data.items;
-      //console.log($scope.title);
-
-       // console.log($scope.params);
-
-    //$scope.GetAlbumYear= function(AlbumId) {
-    //  $http.get('https://api.spotify.com/v1/albums/'+ AlbumId ).success(function(data) {
-    //      //$scope.albums[i].AlbumYear = data.release_date.slice(0,4);
-    //      //console.log(data.release_date.slice(0,4) );
-    //      $scope.Year =  data.release_date.slice(0,4);
-    //      console.log($scope.Year)
-    //  });
-    //}
 
     $scope.movieID = $routeParams.movieID;
     //  console.log($routeParams.movieID)

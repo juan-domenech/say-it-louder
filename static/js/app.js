@@ -21,19 +21,11 @@ IMDBAPIApp.config(['$routeProvider',
         templateUrl: '/static/html/search.html',
         controller: 'ArtistListCtrl'
       }).
-    when('/albums/:ArtistId/:ArtistName', {
-        templateUrl: '/static/html/albums.html',
-        controller: 'AlbumsCtrl'
-      }).
-    when('/tracks/:AlbumId/:AlbumName/:ArtistName', {
-        templateUrl: '/static/html/tracks.html',
-        controller: 'TracksCtrl'
-      }).
-    when('/play/:TrackId/:TrackName/:AlbumName/:ArtistName', {
-        templateUrl: '/static/html/play.html',
-        controller: 'PlayCtrl'
-      }).
 
+    when('/status', {
+        templateUrl: '/status.html',
+        controller: 'StatusCtrl'
+      }).
 
     otherwise({
         redirectTo: '/login'
