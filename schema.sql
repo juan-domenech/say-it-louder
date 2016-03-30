@@ -28,11 +28,13 @@ CREATE TABLE `games` (
   `player_a` varchar(45) DEFAULT NULL,
   `player_b` varchar(45) DEFAULT NULL,
   `movieID` int(4) DEFAULT NULL,
-  `keywords` varchar(200) DEFAULT NULL,
+  `keywords_a` varchar(200) DEFAULT NULL,
+  `keywords_b` varchar(200) DEFAULT NULL,
+  `solved` int(1) DEFAULT NULL,
   PRIMARY KEY (`game_id`),
   UNIQUE KEY `player_b_UNIQUE` (`player_b`),
   UNIQUE KEY `player_a_UNIQUE` (`player_a`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,4 +101,4 @@ CREATE TABLE `searches` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-30 14:43:25
+-- Dump completed on 2016-03-30 16:13:46
