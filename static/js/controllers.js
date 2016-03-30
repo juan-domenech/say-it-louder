@@ -1,6 +1,17 @@
 
 var IMDBAPIControllers = angular.module('IMDBAPIControllers', []);
 
+// Login
+IMDBAPIControllers.controller('Login', ['$scope', '$routeParams', '$http',
+  function($scope, $routeParams, $http) {
+
+      console.log("Login Called")
+
+  }]
+);
+
+
+
 // Artists Search (Main page)
 IMDBAPIControllers.controller('ArtistListCtrl', ['$scope', '$routeParams', '$http', '$location',
 

@@ -43,3 +43,6 @@ class IMDataBase:
                 print "No movies found!"
             return {}
 
+
+    # Not necessary at the moment. We should have this information into MySQL
+    #def get_movie_title_by_movieID(self,movie_id):

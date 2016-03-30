@@ -16,7 +16,7 @@ ChallengeApp.config(['$routeProvider',
         controller: 'MovieSearchCtrl'
       }).
     when('/challenge/movie_selected/:movieID', {
-        templateUrl: '/challenge/movie_selected',
+        templateUrl: '/challenge/movie_selected/',
         controller: 'MovieSelectedCtrl'
       }).
 

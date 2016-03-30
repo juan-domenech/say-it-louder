@@ -1,17 +1,17 @@
-var ChallengeControllers = angular.module('ChallengeControllers', []);
+var WelcomeControllers = angular.module('WelcomeControllers', []);
 
 //
-ChallengeControllers.controller('ChallengeCtrl', ['$scope', '$routeParams', '$http',
+WelcomeControllers.controller('WelcomeCtrl', ['$scope', '$routeParams', '$http',
   function($scope, $routeParams, $http) {
 
-      //console.log("Login Called")
+      console.log("Login Called")
 
   }]
 );
 
 
-// Challenge Movie Search
-ChallengeControllers.controller('MovieSearchCtrl', ['$scope', '$routeParams', '$http', '$location',
+// Artists Search (Main page)
+WelcomeControllers.controller('MovieSearchCtrl', ['$scope', '$routeParams', '$http', '$location',
 
   // Function executed when we get an artist name at the URL Parameters
   function ($scope, $routeParams, $http, $location) {
@@ -58,48 +58,3 @@ ChallengeControllers.controller('MovieSearchCtrl', ['$scope', '$routeParams', '$
   }]
 );
 
-
-
-// Show Albums
-ChallengeControllers.controller('MovieSelectedCtrl', ['$scope', '$routeParams', '$http',
-  function($scope, $routeParams, $http) {
-
-    $http.get('http://127.0.0.1:5000/api/v0/secure/update/movieID/'+ $routeParams.movieID).success(function(data) {
-    //$scope.albums = data.items;
-
-        $http.get('http://127.0.0.1:5000/api/v0/get/title/'+ $routeParams.movieID).success(function(data2) {
-        //$scope.params = data;
-
-        //console.log(data.title);
-        //console.log(data.year);
-
-        $scope.title = data2.title;
-        $scope.year = data2.year;
-
-        });
-
-    });
-
-
-
-      //$scope.title = data.items;
-      //console.log($scope.title);
-
-       // console.log($scope.params);
-
-    //$scope.GetAlbumYear= function(AlbumId) {
-    //  $http.get('https://api.spotify.com/v1/albums/'+ AlbumId ).success(function(data) {
-    //      //$scope.albums[i].AlbumYear = data.release_date.slice(0,4);
-    //      //console.log(data.release_date.slice(0,4) );
-    //      $scope.Year =  data.release_date.slice(0,4);
-    //      console.log($scope.Year)
-    //  });
-    //}
-
-    $scope.movieID = $routeParams.movieID;
-    //  console.log($routeParams.movieID)
-
-    //$scope.ArtistName = $routeParams.ArtistName;
-
-  }]
-);

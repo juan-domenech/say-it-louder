@@ -419,13 +419,13 @@ class MySQLDatabase:
         cursor.execute(sql)
         # Let's get only one (in case more than one game is empty)
         game_id = cursor.fetchone()
+        cursor.close()
 
         if game_id:
             game_id = game_id[0]
 
         if DEBUG:
             print 'Found open game:',game_id
-        cursor.close()
 
         if game_id:
             # There is a game waiting.
@@ -459,6 +459,7 @@ class MySQLDatabase:
         cursor = self.db.cursor()
         cursor.execute(sql)
         game_id = cursor.fetchone()
+        cursor.close()
 
         if game_id:
             if DEBUG:
@@ -472,6 +473,7 @@ class MySQLDatabase:
         cursor = self.db.cursor()
         cursor.execute(sql)
         game_id = cursor.fetchone()
+        cursor.close()
 
         if game_id:
             if DEBUG:
@@ -482,5 +484,73 @@ class MySQLDatabase:
         if DEBUG:
             print 'This is a new user'
         return False
+
+
+    # Update movieID
+    def update_movieID(self,movieID, game_id):
+        sql = "UPDATE `games` SET `movieID`= "+str(movieID)+" WHERE `game_id`= "+str(game_id)+";"
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        self.db.commit()
+        cursor.close()
+        return
+
+
+    # Update Keywords
+    def update_keywords(self,keywords, game_id):
+        sql = 'UPDATE `games` SET `keywords`="'+str(keywords)+'" WHERE `game_id`= '+str(game_id)+';'
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        self.db.commit()
+        cursor.close()
+        return
+
+
+    def get_movieID_by_game_id(self, game_id):
+        sql = "SELECT movieID FROM games WHERE game_id = "+str(game_id)+";"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        movieID = cursor.fetchone()
+        cursor.close()
+
+        if movieID:
+            movieID = movieID[0]
+
+        if movieID:
+            if DEBUG:
+                print "Found movieID:",movieID
+            return movieID
+        else:
+            if DEBUG:
+                print "ERROR: movieID not found in DB"
+            return False
+
+
+    def get_movie_title_by_movieID(self,movieID):
+
+        # Not necessary at the moment. We should have this information into MySQL
+        #title, year = imDB.get_movie_title_by_movieID(movieID)
+
+        sql = "SELECT title, year FROM movies WHERE movieID = "+str(movieID)+";"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+
+        title = str(result[0])
+        year = int(result[1])
+
+        if DEBUG:
+            print "From movieID: %i we got title: %s (%i)" % (movieID,title,year)
+
+        return title,year
 
 

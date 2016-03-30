@@ -7,6 +7,12 @@ var IMDBAPIApp = angular.module('IMDBAPIApp', [
 IMDBAPIApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
+
+    when('/login', {
+        templateUrl: '/login',
+        controller: 'Login'
+      }).
+
     when('/movie/', {
         templateUrl: '/static/html/search.html',
         controller: 'ArtistListCtrl'
@@ -29,13 +35,7 @@ IMDBAPIApp.config(['$routeProvider',
       }).
 
 
-    //when('/your_open_game ', {
-    //    templateUrl: '/static/html/play.html',
-    //    controller: 'PlayCtrl'
-    //  }).
-
-
     otherwise({
-        redirectTo: '/'
+        redirectTo: '/login'
       });
   }]);

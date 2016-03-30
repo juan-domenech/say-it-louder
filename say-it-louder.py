@@ -154,8 +154,60 @@ def challenge():
         return redirect("/login")
     user_name = session['user_name']
 
-
     return render_template('challenge.html', user_name = user_name )
+
+
+
+# Recover Keywords from the Challenge
+@app.route('/challenge/keywords', methods=['GET', 'POST'])
+def challenge_keywords():
+    # Method POST
+    if request.method == 'POST':
+
+        result = []
+
+        if request.form.has_key('keyword1') and request.form['keyword1'] != '':
+            keyword1 = request.form['keyword1']
+            result.append(str(keyword1))
+            if DEBUG:
+                print "Keyword1:",keyword1
+        if request.form.has_key('keyword2') and request.form['keyword2'] != '':
+            keyword2 = request.form['keyword2']
+            result.append(str(keyword2))
+            if DEBUG:
+                print "Keyword2:",keyword2
+        if request.form.has_key('keyword3') and request.form['keyword3'] != '':
+            keyword3 = request.form['keyword3']
+            result.append(str(keyword3))
+            if DEBUG:
+                print "Keyword3:",keyword3
+        if request.form.has_key('keyword4') and request.form['keyword4'] != '':
+            keyword4 = request.form['keyword4']
+            result.append(str(keyword4))
+            if DEBUG:
+                print "Keyword4:",keyword4
+        if request.form.has_key('keyword5') and request.form['keyword5'] != '':
+            keyword5 = request.form['keyword5']
+            result.append(str(keyword5))
+            if DEBUG:
+                print "Keyword5:",keyword5
+        if request.form.has_key('keyword6') and request.form['keyword6'] != '':
+            keyword6 = request.form['keyword6']
+            result.append(str(keyword6))
+            if DEBUG:
+                print "Keyword6:",keyword6
+
+        if DEBUG:
+            print "Keywords",result
+
+        db.update_keywords(result,session['game_id'])
+
+        return 'Keywords updated'
+
+    # Method GET
+    else:
+        return "Method not allowed"
+
 
 
 
@@ -233,15 +285,22 @@ def search_movie_challenge():
     return render_template('search_movie_challenge.html')
 
 
-
-@app.route('/challenge/movie_selected')
+@app.route('/challenge/movie_selected/')
 def movie_selected_challenge():
-
     if not 'user_name' in session:
         if DEBUG:
             print "Not logged in. Redirecting to /login"
         return redirect("/login")
     #user_name = session['user_name']
+    #game_id = session['game_id']
+    #movieID = int(movieID)
+    #if DEBUG:
+    #    print "Updating game_id %i with movieID %i" % (game_id, movieID)
+    #db.update_movieID(movieID,game_id)
+
+    #movieID = db.get_movieID_by_game_id(session['game_id'])
+    #if movieID:
+    #    title, year = db.get_movie_title_by_movieID(movieID)
 
     return render_template('movie_selected_challenge.html')
 
@@ -329,6 +388,51 @@ def imdb_api_search(query):
     response.headers['Access-Control-Allow-Origin'] = '*'
 
     return response
+
+
+# API call to update the movieID extracting it from the URL and the game_id from he session
+@app.route('/api/v0/secure/update/movieID/<movieID>')
+def imdb_api_update_movieID(movieID):
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login")
+    #user_name = session['user_name']
+    game_id = int(session['game_id'])
+    movieID = int(movieID)
+    if DEBUG:
+       print "Updating game_id %i with movieID %i" % (game_id, movieID)
+    db.update_movieID(movieID,game_id)
+
+    #result = "{ 'success': { 'status': 100, 'message': 'movieID updated' } }"
+    result = '{ "success":  100 }'
+    response = make_response( result )
+    response.headers['Content-Type'] = 'application/json; charset=utf-8'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
+@app.route('/api/v0/get/title/<movieID>')
+def imdb_api_get_title(movieID):
+
+    result = {}
+    movieID = int(movieID)
+    title, year = db.get_movie_title_by_movieID(movieID)
+
+    result['movieID'] = movieID
+    result['title'] = title
+    result['year'] = year
+
+    result = json.dumps( result, sort_keys=True, indent=4, separators=(',', ': ') )
+    if DEBUG:
+        print result
+
+    response = make_response( result )
+    response.headers['Content-Type'] = 'application/json; charset=utf-8'
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
 
 
 
