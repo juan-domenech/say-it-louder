@@ -16,6 +16,26 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `games`
+--
+
+DROP TABLE IF EXISTS `games`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `games` (
+  `game_id` int(4) NOT NULL AUTO_INCREMENT,
+  `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `player_a` varchar(45) DEFAULT NULL,
+  `player_b` varchar(45) DEFAULT NULL,
+  `movieID` int(4) DEFAULT NULL,
+  `keywords` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`game_id`),
+  UNIQUE KEY `player_b_UNIQUE` (`player_b`),
+  UNIQUE KEY `player_a_UNIQUE` (`player_a`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `movies`
 --
 
@@ -67,7 +87,7 @@ CREATE TABLE `searches` (
   PRIMARY KEY (`search_id`),
   UNIQUE KEY `id_UNIQUE` (`search_id`),
   UNIQUE KEY `string_UNIQUE` (`search`)
-) ENGINE=InnoDB AUTO_INCREMENT=757 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=781 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -79,4 +99,4 @@ CREATE TABLE `searches` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-24 15:46:40
+-- Dump completed on 2016-03-30 14:43:25
