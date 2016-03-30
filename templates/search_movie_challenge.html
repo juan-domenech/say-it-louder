@@ -1,0 +1,26 @@
+<h3>Let's select a movie.</h3>
+
+<!--
+Search Box with:
+*Detect every key pressed and update the search calling typeSearch(Search)
+*Detect Enter key presded and send the current Search to typeEnter(Search)
+-->
+Movie name: <input class="main-search" ng-model="Search" autofocus ng-change="typeSearch(Search)" ng-keyup="$event.keyCode == 13 && typeEnter(Search)" ><br>
+
+<!-- Only present list when there is something to show -->
+<div ng-if="artists[0] != undefined && Search != '' ">
+
+  <h4>Movies found:</h4>
+
+  <ul class="artists">
+    <li ng-repeat="items in artists | filter:Search" class="thumbnail">
+
+    {% raw %}
+    <a href="#/challenge/movie_selected/{{items.movieID}}">{{items.title}} ({{items.year}}) ID:{{items.movieID}}</a>
+    {% endraw %}
+
+
+    </li>
+  </ul>
+
+</div>

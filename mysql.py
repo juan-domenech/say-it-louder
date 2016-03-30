@@ -382,11 +382,15 @@ class MySQLDatabase:
         cursor = self.db.cursor()
         cursor.execute(sql)
         game_id = cursor.fetchone()
+
+        if game_id:
+            game_id = game_id[0]
+
         if game_id:
             if DEBUG:
                 print "Found game_id:",game_id
             cursor.close()
-            return game_id[0]
+            return game_id
         else:
             if DEBUG:
                 print "ERROR: Game_ID not found in DB"
@@ -415,17 +419,26 @@ class MySQLDatabase:
         cursor.execute(sql)
         # Let's get only one (in case more than one game is empty)
         game_id = cursor.fetchone()
+
+        if game_id:
+            game_id = game_id[0]
+
+        if DEBUG:
+            print 'Found open game:',game_id
         cursor.close()
 
         if game_id:
             # There is a game waiting.
             return game_id
         else:
-            # No game waiting.
+            # No game waiting
+            if DEBUG:
+                print 'No open game. Creating a new one...'
             #game_id = self.create_game(user_name)
             return False
 
 
+    # Join game as Player B
     def join_game(self,user_name,game_id):
         sql = "UPDATE `games` SET `player_b`='"+str(user_name)+"' WHERE `game_id`='"+str(game_id)+"';"
         if DEBUG == 1:
@@ -435,5 +448,39 @@ class MySQLDatabase:
         cursor.close()
         self.db.commit()
         return
+
+
+    def check_for_duplicate_user(self,user_name):
+        if DEBUG:
+            print 'Checking wether player %s is already in the system...' % user_name
+        sql = "SELECT game_id FROM games WHERE player_a ='"+user_name+"';"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        game_id = cursor.fetchone()
+
+        if game_id:
+            if DEBUG:
+                print "User already playing as Player A:"
+            game_id = game_id[0]
+            return game_id
+
+        sql = "SELECT game_id FROM games WHERE player_b ='"+user_name+"';"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        game_id = cursor.fetchone()
+
+        if game_id:
+            if DEBUG:
+                print "User already playing as Player B:"
+            game_id = game_id[0]
+            return game_id
+
+        if DEBUG:
+            print 'This is a new user'
+        return False
 
 

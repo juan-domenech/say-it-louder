@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="IMDBAPIApp">
+<html lang="en" ng-app="ChallengeApp">
 <head>
 	<meta charset="UTF-8">
-	<title>Say it louder: Movies</title>
+	<title>Say it louder: Movies - Challenge</title>
 	<link rel="stylesheet" href="/static/lib/css/bootstrap.min.css">
 	<script src="/static/lib/js/angular.min-1.5.0.js"></script>
 	<script src="/static/lib/js/angular-route.min-1.5.0.js"></script>
-	<script src="/static/js/app.js"></script>
-	<script src="/static/js/controllers.js"></script>
+	<script src="/static/js/app-challenge.js"></script>
+	<script src="/static/js/controllers-challenge.js"></script>
+    <!--
 	<script src="/static/js/filters.js"></script>
+	-->
 	<!-- Logo for Social Media -->
 	<link rel="image_src" href="https://angularjs.org/img/AngularJS-large.png" />
 	<!--[if IE]>
@@ -17,30 +19,19 @@
 	<h3>Please use a proper Internet Browser.</h3>
 	<![endif]-->
 </head>
-<body ng-controller="ArtistListCtrl">
+<body ng-controller="ChallengeCtrl">
 
-<h1> Say it louder... With Movies! </h1>
+<h1> Say it louder... with Movies! </h1>
 
-<!--
-{% raw %}
-    {% if user_name %}
-        <h1>Hello {{ user_name }} !</h1>
-    {% endif %}
+        <h2>Welcome {{ user_name }}!</h2>
 
-    {% if you_open_game %}
-        <h2> You open game. Click to continue.</h2>
-        <a href="/you_open_game">Click</a>
-    {% else %}
-        <h2> A game player is waiting for you! Click to continue.</h2>
-        <a href="/join_game">Click</a>
-    {% endif %}
-{% endraw %}
--->
-
+        <h5> This is the Challenge page. Here you select a movie to play with your mate.</h5>
 	<!-- Main AngularJS directive -->
+    <div ng-view></div>
 
-        <div ng-view></div>
-
+    <!--
+    <a href="#/welcome/movie/"> Click to Search</a>
+    -->
 
 	<!-- extra files -->
 	<script src="/static/lib/js/jquery-2.2.0.min.js"></script>
