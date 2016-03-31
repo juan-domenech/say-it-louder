@@ -683,34 +683,6 @@ class MySQLDatabase:
                 else:
                     game['solved'] = None
 
-            # for item in result_temp:
-            #     game = []
-            #     # game_id
-            #     #if item[0]:
-            #     game.append(int(item[0]))
-            #     # time_stamp
-            #     #if item[1]:
-            #     game.append(str(item[1]))
-            #     # player_a
-            #     #if item[2]:
-            #     game.append(str(item[2]))
-            #     # player_b
-            #     #if item[3]:
-            #     game.append(str(item[3]))
-            #     # movieID
-            #     #if item[4]:
-            #     game.append(int(item[4]))
-            #     # keywords_a
-            #     #if item[5]:
-            #     game.append(str(item[5]))
-            #     # keywords_b
-            #     #if item[6]:
-            #     game.append(str(item[6]))
-            #     # solved
-            #     #if item[7]:
-            #     game.append(str(item[7]))
-            #
-
                 result.append(game)
 
         if DEBUG:

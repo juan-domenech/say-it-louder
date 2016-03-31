@@ -196,6 +196,9 @@ def status_html():
         game = ''
     response += '</ul>'
 
+    # When the games we have started are all of them solved -> Give the option to create a new one
+    #if
+    
     if DEBUG:
         print response
 
@@ -280,7 +283,7 @@ def join_game(game_id):
         print 'Joining game_id %i from Status Page' % game_id
     session['player'] = 'B'
     session['game_id'] = game_id
-    #return redirect('/resolve/movie_selected/'+str(game_id), code=302)
+
     return redirect('/resolve/', code=302)
 
 
@@ -480,7 +483,7 @@ def resolve_keywords_check():
     game_id = session['game_id']
 
     response = '<br>'
-    response += '<h3> Keywords Check for "{{ title }}" ({{ year }}) movieID: {{movieID}}</h3>'
+    response += '<h3> Keywords Check for "{{ title }}" ({{ year }})</h3>'
 
     player_a = db.get_keywords_player_a_by_game_id(game_id)
     player_b = db.get_keywords_player_b_by_game_id(game_id)
@@ -519,14 +522,11 @@ def resolve_keywords_check():
     else:
         # Not solved
         response += '<br><a href="/resolve/#/resolve/movie_selected/">Try again!</a>'
-
-    response += '<br><a href="/give_up">Give Up</a>'
+        response += '<br><a href="/give_up">Give Up</a>'
 
     response += '<br><a href="/#/status">Status Page</a>'
 
     return response
-
-
 
 
 
