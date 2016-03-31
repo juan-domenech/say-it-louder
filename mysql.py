@@ -723,3 +723,15 @@ class MySQLDatabase:
             return False
 
 
+    def store_keywords(self,movieID, keywords, user_name):
+        keywords = '"'+str(keywords)+'"'
+        print user_name
+        sql = "INSERT INTO games_keywords (movieID,keywords,user_name) VALUES ("+str(movieID)+","+keywords+",'"+str(user_name)+"');"
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        cursor.close()
+        self.db.commit()
+        # Recover game_id that the autoincrement has created for us from the last Insert
+        return

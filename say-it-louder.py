@@ -115,7 +115,6 @@ def login_post():
                 session['game_id'] = game_id
                 return redirect('/challenge/', code=302)
 
-
     # Method GET
     else:
         # User already with session but trying to log-in again
@@ -161,7 +160,7 @@ def status_html():
     response += '<ul>'
     for item in games_total:
         game_id = item['game_id']
-        #game += '<h5>GameID:'+str(item['game_id'])+' Time_Stamp:'+item['time_stamp']+' Player_A:'+item['player_a']
+
         game += '<li>GameID:'+str(game_id)+' Player_A:'+item['player_a']
         if item.has_key('player_b'):
             game += ' Player_B:'+str(item['player_b'])
@@ -198,7 +197,7 @@ def status_html():
 
     # When the games we have started are all of them solved -> Give the option to create a new one
     #if
-    
+
     if DEBUG:
         print response
 
@@ -379,8 +378,12 @@ def challenge_keywords():
         if DEBUG:
             print "Keywords from challenge:",result
 
-
+        # Save keywords for the current game
         db.update_keywords_a(result,session['game_id'])
+
+        # Save keywords for our collection
+        movieID = db.get_movieID_by_game_id(session['game_id'])
+        db.store_keywords(movieID,result,session['user_name'])
 
         return redirect("#/status", code=302)
 
@@ -463,7 +466,12 @@ def resolve_keywords():
         if DEBUG:
             print "Keywords from resolve",result
 
+        # Save keywords for this game
         db.update_keywords_b(result,session['game_id'])
+
+        # Save keywords for our collection
+        movieID = db.get_movieID_by_game_id(session['game_id'])
+        db.store_keywords(movieID,result,session['user_name'])
 
         return redirect("/resolve/#/resolve/movie_selected/keywords/check/", code=302)
 
