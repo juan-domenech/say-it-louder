@@ -728,11 +728,26 @@ class MySQLDatabase:
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
-
         player_a = result[0]
+        if player_a:
+            return player_a
+        else:
+            return False
 
-        return player_a
 
-
+    def get_player_b_by_game_id(self, game_id):
+        self.db.commit()
+        sql = "SELECT player_b FROM games WHERE game_id = "+str(game_id)+";"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+        player_b = result[0]
+        if player_b:
+            return player_b
+        else:
+            return False
 
 

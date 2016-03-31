@@ -19,9 +19,8 @@ app.secret_key = 'This_is_a_secret'
 
 
 ######################################################################################################################
-#                                                         Main App                                                   #
+#                                        Main App and common options                                                 #
 ######################################################################################################################
-
 
 @app.route('/')
 def index():
@@ -69,12 +68,6 @@ def index():
 
 @app.route('/login')
 def login_html():
-
-    #if not 'user_name' in session:
-    #    if DEBUG:
-    #        print "Not logged in. Redirecting to /login"
-    #    return redirect("/login")
-    #user_name = session['user_name']
 
     return render_template('login.html')
 
@@ -147,8 +140,7 @@ def logout():
     return redirect('/', code=302)
 
 
-
-
+# Main Status page
 @app.route('/status.html')
 def status_html():
     if not 'user_name' in session:
@@ -159,16 +151,18 @@ def status_html():
 
     response =  '<h2>Status Page</h2>'
     response += '<h3>Hello '+user_name+'!</h3>'
-    response += '<h4>You are Player_'+session['player']+' in Game_ID:'+str(session['game_id'])+'</h4>'
+    if session['game_id']:
+        response += '<h4>You are Player_'+session['player']+' in Game_ID:'+str(session['game_id'])+'</h4>'
     response += 'This is the current status:'
 
     game = ''
-
     games_total = db.get_games()
 
+    response += '<ul>'
     for item in games_total:
+        game_id = item['game_id']
         #game += '<h5>GameID:'+str(item['game_id'])+' Time_Stamp:'+item['time_stamp']+' Player_A:'+item['player_a']
-        game += '<h5>GameID:'+str(item['game_id'])+' Player_A:'+item['player_a']
+        game += '<li>GameID:'+str(game_id)+' Player_A:'+item['player_a']
         if item.has_key('player_b'):
             game += ' Player_B:'+str(item['player_b'])
 
@@ -181,16 +175,30 @@ def status_html():
         #     game += ' Keywords_A:'+str(item['keywords_a'])
         # if item.has_key('keywords_b'):
         #     game += ' Keywords_B:'+str(item['keywords_b'])
-        if item.has_key('solved '):
-            game += ' Solved:'+str(item['solved'])
+        #if item.has_key('solved'):
+        #    game += ' Solved:'+str(item['solved'])
 
-        game += '</h5>'
+        # If the game is solved -> No options
+        if (item['solved'] == 2):
+            game += ' Solved'
 
-    response += game
+        # When the game is not solved + Player_B is empty + Player_A is a different user-> Option to Join
+        elif (item['solved'] != 2) and ( db.get_player_a_by_game_id(game_id) != user_name ) and ( db.get_player_b_by_game_id(game_id) == False ):
+            game += ' <a href="/join_game/'+str(game_id)+'">Join</a>'
+
+        # When the game is not solved and user_name is Player_B -> Option to continue playing
+        elif (item['solved'] == None ) and ( db.get_player_b_by_game_id(game_id) == user_name ):
+            game += ' <a href="/resolve/#/resolve/movie_selected/">Continue</a>'
+
+        game += '</li>'
+
+        response += game
+        game = ''
+    response += '</ul>'
 
     if DEBUG:
         print response
-    #return render_template('status.html', user_name = user_name, games = games )
+
     return response
 
 
@@ -256,6 +264,24 @@ def give_up():
 
     return redirect("#/status", code=302)
 
+
+# Join Game
+@app.route('/join_game/<game_id>')
+def join_game(game_id):
+    if not 'user_name' in session:
+        if DEBUG:
+            print "Not logged in. Redirecting to /login"
+        return redirect("/login", code=302)
+    user_name = session['user_name']
+    game_id = int(game_id)
+
+    db.join_game(user_name,game_id)
+    if DEBUG:
+        print 'Joining game_id %i from Status Page' % game_id
+    session['player'] = 'B'
+    session['game_id'] = game_id
+    #return redirect('/resolve/movie_selected/'+str(game_id), code=302)
+    return redirect('/resolve/', code=302)
 
 
 
