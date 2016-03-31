@@ -23,12 +23,18 @@ ResolveApp.config(['$routeProvider',
         controller: 'MovieSelectedCtrl'
       }).
 
-    when('/resolve/keywords/', {
-        templateUrl: '/resolve/keywords',
+    when('/resolve/movie_selected/keywords/', {
+        templateUrl: '/resolve/movie_selected/keywords/',
         controller: 'ResolveKeywordsCtrl'
+      }).
+
+    when('/resolve/movie_selected/keywords/check/', {
+        templateUrl: '/resolve/movie_selected/keywords/check/',
+        controller: 'ResolveKeywordsCheckCtrl'
       }).
 
     otherwise({
         redirectTo: '/resolve/movie_selected/'
       });
+
   }]);

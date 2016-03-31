@@ -91,3 +91,24 @@ ResolveControllers.controller('ResolveKeywordsCtrl', ['$scope', '$routeParams', 
 
   }]
 );
+
+
+//
+ResolveControllers.controller('ResolveKeywordsCheckCtrl', ['$scope', '$routeParams', '$http',
+  function($scope, $routeParams, $http) {
+
+    $http.get('http://127.0.0.1:5000/api/v0/secure/get/game_id/').success(function(data) {
+
+        $scope.movieID = data.movieID;
+
+        $http.get('http://127.0.0.1:5000/api/v0/get/title/'+ $scope.movieID).success(function(data2) {
+
+        $scope.title = data2.title;
+        $scope.year = data2.year;
+
+        });
+
+    });
+
+  }]
+);
