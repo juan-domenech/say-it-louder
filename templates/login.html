@@ -1,25 +1,12 @@
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="/static/lib/css/bootstrap.min.css">
-</head>
-<body>
--->
+
 <h2> Login: </h2>
 
     {% if message %}
         <h3>{{ message }}</h3>
     {% endif %}
 
-<form action="/login" method="post">
-  Type your First Name <input type="text" name="user_name"><br>
+<form action="/login_post" method="post">
+  Type your First Name <input type="text" name="user_name" autofocus><br>
   <input type="submit" value="Submit">
 </form>
 
-<!--
-</body>
-</html>
--->

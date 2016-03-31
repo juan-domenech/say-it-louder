@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
-</body>
-</html>
+<h2>Hello {{ user_name }}! {{ player_a }} has a movie ready for you:</h2>
+
+{% raw %}
+<h3>Movie: "{{ title }}" ({{ year }}) movieID: {{movieID}}</h3>
+{% endraw %}
+
+<br>
+
+<h4> {{ player_a }} has described this movie using <strong>{{ words }} keywords</strong>.</h4>
+
+<h4> Now is your turn to describe the movie using your own keywords.</h4>
+
+<h5> Rules:</h5>
+<h6> - Words present in the movie title can not be used.</h6>
+<h6> - English articles or prepositions can not be used.</h6>
+
+<br>
+
+<form action="/resolve/movie_selected/keywords/" method="post">
+    Keyword #1 <input type="text" name="keyword1" autofocus><br>
+    Keyword #2 <input type="text" name="keyword2"><br>
+    Keyword #3 <input type="text" name="keyword3"><br>
+    Keyword #4 <input type="text" name="keyword4"><br>
+    Keyword #5 <input type="text" name="keyword5"><br>
+    Keyword #6 <input type="text" name="keyword6"><br>
+
+  <input type="submit" value="Submit">
+</form>

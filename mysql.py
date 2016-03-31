@@ -455,6 +455,17 @@ class MySQLDatabase:
         return
 
 
+    # Player B gives up
+    def remove_player_b(self,game_id):
+        sql = "UPDATE `games` SET `player_b`= NULL WHERE `game_id`='"+str(game_id)+"';"
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        cursor.close()
+        self.db.commit()
+        return
+
     def check_for_duplicate_user(self,user_name):
         self.db.commit()
         if DEBUG:
@@ -504,9 +515,65 @@ class MySQLDatabase:
         return
 
 
-    # Update Keywords
+    # Update Keywords for A
     def update_keywords_a(self,keywords, game_id):
         sql = 'UPDATE `games` SET `keywords_a`="'+str(keywords)+'" WHERE `game_id`= '+str(game_id)+';'
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        self.db.commit()
+        cursor.close()
+        return
+
+
+    # Update Keywords for B
+    def update_keywords_b(self,keywords, game_id):
+        sql = 'UPDATE `games` SET `keywords_b`="'+str(keywords)+'" WHERE `game_id`= '+str(game_id)+';'
+        if DEBUG == 1:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        self.db.commit()
+        cursor.close()
+        return
+
+
+    def get_keywords_player_a_by_game_id(self, game_id):
+        self.db.commit()
+        sql = "SELECT keywords_a FROM games WHERE game_id = "+str(game_id)+";"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+
+        keywords = eval(result[0])
+        if DEBUG:
+            print "Keywords:",keywords
+        return keywords
+
+
+    def get_keywords_player_b_by_game_id(self, game_id):
+        self.db.commit()
+        sql = "SELECT keywords_b FROM games WHERE game_id = "+str(game_id)+";"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+
+        keywords = eval(result[0])
+        if DEBUG:
+            print "Keywords:",keywords
+        return keywords
+
+
+    # Update game solved
+    def update_game_solved(self,game_id):
+        sql = 'UPDATE `games` SET `solved`= 2 WHERE `game_id`= '+str(game_id)+';'
         if DEBUG == 1:
             print sql
         cursor = self.db.cursor()
@@ -650,5 +717,22 @@ class MySQLDatabase:
             print "Games:",result
 
         return result
+
+
+    def get_player_a_by_game_id(self, game_id):
+        self.db.commit()
+        sql = "SELECT player_a FROM games WHERE game_id = "+str(game_id)+";"
+        if DEBUG:
+            print sql
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+
+        player_a = result[0]
+
+        return player_a
+
+
 
 
