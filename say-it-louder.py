@@ -547,7 +547,7 @@ def resolve_keywords_check():
 @app.route('/api/v0/search/<query>/movie')
 def imdb_api_search(query):
 
-    result = {}
+    #result = {}
 
     print 'Search :"'+query+'"'
 
