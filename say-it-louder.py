@@ -684,7 +684,7 @@ def imdb_api_get_title(movieID):
 
 if __name__ == '__main__':
     app.run(debug=False,
-            host="0.0.0.0",
+            host="127.0.0.1",
             port=5000,
             threaded=True,
             #processes=10
